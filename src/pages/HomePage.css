@@ -137,3 +137,10 @@
 .toggle-button:hover {
   background-color: #0056b3;
 }
+
+.no-articles-message {
+  text-align: center;
+  color: #888;
+  font-size: 18px;
+  padding: 20px;
+}

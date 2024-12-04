@@ -11,6 +11,7 @@ module.exports = (config, env) => {
       '@components': path.resolve(__dirname, 'src/components/'),
       '@pages': path.resolve(__dirname, 'src/pages/'),
       '@contexts': path.resolve(__dirname, 'src/contexts/'),
+      '@hooks': path.resolve(__dirname, 'src/hooks/'),
       '@utils': path.resolve(__dirname, 'src/utils/'),
     },
     extensions: ['.js', '.ts', '.d.ts', '.tsx']

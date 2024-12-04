@@ -3,14 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import Tile from '@components/Tile';
 import { useArticles } from '@contexts/ArticlesContext';
 import { useSearchBar } from '@contexts/SearchBarContext';
+import useDebounce from '@hooks/useDebounce';
+import { Article } from '@interfaces/Article';
 import './HomePage.css';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { articles, setArticles, count, setCount } = useArticles();
   const { searchTerm, setSearchTerm } = useSearchBar();
+  const debouncedSearchTerm = useDebounce(searchTerm, 300); // 300ms debounce delay
   const [tileWidth, setTileWidth] = useState('calc(33.333% - 40px)'); // Default width
   const [showMoreButtonVisible, setShowMoreButtonVisible] = useState(true);
+  const [cooldown, setCooldown] = useState(false);
   const countRef = useRef(count);
 
   const [dateFilter, setDateFilter] = useState('');
@@ -43,6 +47,41 @@ const HomePage: React.FC = () => {
     // Restore the count from the ref when the component mounts
     setCount(countRef.current);
   }, []);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      const fetchArticlesBySearchTerm = async () => {
+        try {
+          const response = await fetch(`${API_ENDPOINT}/news?keyword=${debouncedSearchTerm}`);
+          const data = await response.json();
+          console.log(data);
+          setArticles(data);
+        } catch (error) {
+          console.error('Error fetching articles by search term:', error);
+        }
+      };
+
+      fetchArticlesBySearchTerm();
+    } else {
+      // If search term is empty, fetch top headlines
+      const fetchTopHeadlines = async () => {
+        try {
+          const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${count}`);
+          const data = await response.json();
+          console.log('Top headlines:', data);
+          setArticles(data);
+        } catch (error) {
+          console.error('Error fetching top headlines:', error);
+        }
+      };
+
+      if (!cooldown) {
+        fetchTopHeadlines();
+        setCooldown(true);
+        setTimeout(() => setCooldown(false), 5000); // 5 seconds cooldown
+      }
+    }
+  }, [debouncedSearchTerm]);
 
   const handleHeadlineClick = (id: number) => {
     navigate(`/article/${id}`);
@@ -106,15 +145,17 @@ const HomePage: React.FC = () => {
   };
 
   const filteredHeadlines = articles
-    .filter(headline =>
-      (headline.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       headline.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()))) &&
-      (dateFilter === '' || headline.date === dateFilter) &&
-      (categoryFilter === '' || headline.category === categoryFilter)
-    )
-    .sort((a, b) => sortOrder === 'asc' ? new Date(a.date).getTime() - new Date(b.date).getTime() : new Date(b.date).getTime() - new Date(a.date).getTime());
+    ? articles
+        .filter(headline =>
+          (headline.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           headline.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()))) &&
+          (dateFilter === '' || headline.date === dateFilter) &&
+          (categoryFilter === '' || headline.category === categoryFilter)
+        )
+        .sort((a, b) => sortOrder === 'asc' ? new Date(a.date).getTime() - new Date(b.date).getTime() : new Date(b.date).getTime() - new Date(a.date).getTime())
+    : [];
 
-  const categories = Array.from(new Set(articles.map(headline => headline.category)));
+  const categories = articles ? Array.from(new Set(articles.map(headline => headline.category))) : [];
 
   return (
     <div className="app">
@@ -170,6 +211,7 @@ const HomePage: React.FC = () => {
             />
           ))}
         </div>
+        {articles === undefined && <div>No articles available.</div>}
       </div>
       {showMoreButtonVisible && (
         <button onClick={toggleShowAll} className="toggle-button">
