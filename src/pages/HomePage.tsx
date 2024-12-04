@@ -12,8 +12,8 @@ const HomePage: React.FC = () => {
   const { articles, setArticles, count, setCount } = useArticles();
   const { searchTerm, setSearchTerm } = useSearchBar();
   const debouncedSearchTerm = useDebounce(searchTerm, 300); // 300ms debounce delay
-  const [tileWidth, setTileWidth] = useState('calc(33.333% - 40px)'); // Default width
   const [showMoreButtonVisible, setShowMoreButtonVisible] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(false);
   const countRef = useRef(count);
 
@@ -26,22 +26,20 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const fetchTopHeadlines = async () => {
+      setLoading(true);
       try {
         const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${count}`);
         const data = await response.json();
-        console.log('Top headlines:', data);
-        setArticles(data);
+        setArticles(data.articles);
       } catch (error) {
         console.error('Error fetching top headlines:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchTopHeadlines();
   }, [count]);
-
-  useEffect(() => {
-    document.documentElement.style.setProperty('--tile-width', tileWidth);
-  }, [tileWidth]);
 
   useEffect(() => {
     // Restore the count from the ref when the component mounts
@@ -51,13 +49,15 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (debouncedSearchTerm) {
       const fetchArticlesBySearchTerm = async () => {
+        setLoading(true);
         try {
           const response = await fetch(`${API_ENDPOINT}/news?keyword=${debouncedSearchTerm}`);
           const data = await response.json();
-          console.log(data);
-          setArticles(data);
+          setArticles(data.articles);
         } catch (error) {
           console.error('Error fetching articles by search term:', error);
+        } finally {
+          setLoading(false);
         }
       };
 
@@ -65,13 +65,15 @@ const HomePage: React.FC = () => {
     } else {
       // If search term is empty, fetch top headlines
       const fetchTopHeadlines = async () => {
+        setLoading(true);
         try {
           const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${count}`);
           const data = await response.json();
-          console.log('Top headlines:', data);
-          setArticles(data);
+          setArticles(data.articles);
         } catch (error) {
           console.error('Error fetching top headlines:', error);
+        } finally {
+          setLoading(false);
         }
       };
 
@@ -89,23 +91,53 @@ const HomePage: React.FC = () => {
 
   const toggleShowAll = async () => {
     const prevArticlesLength = articles.length;
-    setCount(prev => {
-      const newCount = prev + 5;
-      countRef.current = newCount; // Update the ref with the new count
-      return newCount;
-    });
 
-    try {
-      const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${countRef.current}`);
-      const data = await response.json();
-      setArticles(data);
-      if (prevArticlesLength === data.length) {
-        setShowMoreButtonVisible(false);
-      } else {
-        setShowMoreButtonVisible(true);
+    if (selectedCategory || searchTerm) {
+      // Fetch articles based on selected category or search term
+      const fetchArticles = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch(`${API_ENDPOINT}/news?category=${selectedCategory}&keyword=${searchTerm}`);
+          const data = await response.json();
+          setArticles(prevArticles => {
+            const newArticles = data.articles.filter((newArticle: { id: number; }) => 
+              !prevArticles.some(existingArticle => existingArticle.id === newArticle.id)
+            );
+            return [...prevArticles, ...newArticles];
+          });
+        } catch (error) {
+          console.error('Error fetching articles:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchArticles();
+    } else {
+      // Fetch more top headlines
+      setCount(prev => {
+        const newCount = prev + 5;
+        countRef.current = newCount; // Update the ref with the new count
+        return newCount;
+      });
+
+      try {
+        const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${countRef.current}`);
+        const data = await response.json();
+        setArticles(prevArticles => {
+          const newArticles = data.articles.filter((newArticle: { id: number; }) => 
+            !prevArticles.some(existingArticle => existingArticle.id === newArticle.id)
+          );
+          return [...prevArticles, ...newArticles];
+        });
+        if (prevArticlesLength === data.length) {
+          setShowMoreButtonVisible(false);
+        } else {
+          setShowMoreButtonVisible(true);
+        }
+      } catch (error) {
+        console.error('Error fetching top headlines:', error);
       }
-    } catch (error) {
-      console.error('Error fetching top headlines:', error);
     }
   };
 
@@ -201,16 +233,21 @@ const HomePage: React.FC = () => {
             ))}
           </div>
         </div>
-        <div className="headline-tiles">
-          {filteredHeadlines.map((article) => (
-            <Tile
-              key={article.id}
-              headline={article}
-              onClick={() => handleHeadlineClick(article.id)}
-              handleKeywordClick={handleKeywordClick}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="loading">Loading...</div>
+        ) : (
+          <div className="headline-tiles">
+            {filteredHeadlines.map((article) => (
+              <Tile
+                key={article.id}
+                headline={article}
+                width="calc(33.33% - 40px)"
+                onClick={() => handleHeadlineClick(article.id)}
+                handleKeywordClick={handleKeywordClick}
+              />
+            ))}
+          </div>
+        )}
         {articles === undefined && <div>No articles available.</div>}
       </div>
       {showMoreButtonVisible && (
@@ -218,15 +255,6 @@ const HomePage: React.FC = () => {
           Show More
         </button>
       )}
-      <div>
-        <label htmlFor="tileWidth">Tile Width:</label>
-        <input
-          type="text"
-          id="tileWidth"
-          value={tileWidth}
-          onChange={(e) => setTileWidth(e.target.value)}
-        />
-      </div>
     </div>
   );
 };

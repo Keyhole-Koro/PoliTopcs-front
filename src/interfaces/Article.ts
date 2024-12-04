@@ -5,5 +5,24 @@ export interface Article {
   category: string;
   summary: string;
   description: string;
-  keywords: string[]; // Add keywords field
+  dialogs: Dialog[];
+  keywords: string[];
+}
+
+export interface Dialog {
+  id: number;
+  speaker: string;
+  summary: string;
+  response_to: ResponseTo[];
+}
+
+export interface ResponseTo {
+  dialog_id: number;
+  reaction: Reaction;
+}
+
+export enum Reaction {
+  AGREE = "agree",
+  DISAGREE = "disagree",
+  NEUTRAL = "neutral"
 }

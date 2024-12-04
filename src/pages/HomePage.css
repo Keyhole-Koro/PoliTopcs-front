@@ -144,3 +144,9 @@
   font-size: 18px;
   padding: 20px;
 }
+
+.loading {
+  text-align: center;
+  font-size: 1.5em;
+  padding: 20px;
+}

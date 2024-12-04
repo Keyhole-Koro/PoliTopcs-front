@@ -1,15 +1,153 @@
 .article-details {
-    padding: 20px;
-    text-align: left;
-  }
-  
-  .article-details h1 {
-    color: #333;
-    font-size: 32px;
-  }
-  
-  .article-details p {
-    font-size: 18px;
-    color: #666;
-  }
-  
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+}
+
+.back-button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
+.article-content {
+  margin-bottom: 40px;
+  max-width: 800px;
+  width: 100%;
+  text-align: left;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.article-title {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.article-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  color: #888;
+}
+
+.article-description {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.article-keywords {
+  margin-top: 10px;
+}
+
+.keyword {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.keyword:hover {
+  background-color: #e1e1e1;
+}
+
+.dialogs {
+  margin-bottom: 40px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.dialog {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.dialog:hover {
+  background-color: #f1f1f1;
+}
+
+.dialog-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.dialog-content {
+  flex: 1;
+}
+
+.dialog.highlight {
+  border-color: #007bff;
+}
+
+.dialog.agree {
+  border-color: green;
+}
+
+.dialog.disagree {
+  border-color: red;
+}
+
+.dialog.neutral {
+  border-color: yellow;
+}
+
+.dialog.dim {
+  opacity: 0.6;
+}
+
+.headline-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.headline-tile {
+  flex: 1 1 calc(33.333% - 40px);
+  min-width: 250px;
+  max-width: 300px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  cursor: pointer;
+  text-align: left;
+  background-color: white;
+}
+
+.headline-tile:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.headline-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.headline-description {
+  font-size: 14px;
+  color: #555;
+}
