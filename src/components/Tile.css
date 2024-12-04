@@ -1,0 +1,50 @@
+:root {
+    --tile-width: calc(33.333% - 40px); /* Default width */
+  }
+
+  
+.headline-keywords {
+    margin-top: 10px;
+  }
+  
+  .headline-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .headline-tile {
+    padding: 15px; /* Reduced padding */
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: var(--tile-width); /* Use CSS variable for width */
+    min-width: 250px; /* Minimum width to prevent tiles from becoming too narrow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .headline-tile:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .headline-date {
+    font-size: 12px; /* Reduced font size */
+    color: #888;
+  }
+  
+  .headline-title {
+    font-size: 16px; /* Reduced font size */
+    margin: 10px 0;
+  }
+  
+  .headline-summary {
+    font-size: 14px; /* Reduced font size */
+    color: #666;
+    margin: 10px 0;
+  }
+  
+  .headline-description {
+    font-size: 14px; /* Reduced font size */
+    color: #555;
+  }
