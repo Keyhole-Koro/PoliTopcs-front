@@ -69,12 +69,13 @@ const ArticleDetail: React.FC = () => {
 
   const highlight = (dialog_id: number): string => {
     if (!targetDialog || !targetDialog.response_to) return '';
-    console.log(targetDialog.response_to);
+
+    if (targetDialog.id === dialog_id) return '';
   
     const highlightedDialog = 
       targetDialog.response_to.find(response => response.dialog_id === dialog_id);
 
-    if (!highlightedDialog) return '';
+    if (!highlightedDialog) return 'highlight unrelated';
     
     const reactionClass = highlightedDialog.reaction === Reaction.AGREE
       ? 'agree'

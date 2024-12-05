@@ -98,19 +98,26 @@
 }
 
 .dialog.highlight {
-  border-color: #007bff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .dialog.agree {
-  border-color: green;
+  box-shadow: 12px 12px 2px 1px green;
+
 }
 
 .dialog.disagree {
-  border-color: red;
+  box-shadow: 12px 12px 2px 1px red;
+
 }
 
 .dialog.neutral {
-  border-color: yellow;
+  box-shadow: 12px 12px 2px 1px yellow;
+
+}
+
+.dialog.unrelated {
+  background-color: #6d6d6d;
 }
 
 .dialog.dim {
