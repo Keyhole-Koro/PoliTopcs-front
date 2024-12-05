@@ -1,16 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import { ArticlesProvider } from './contexts/ArticlesContext';
 import { SearchBarProvider } from './contexts/SearchBarContext';
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container!); // Create a root.
+
+root.render(
   <React.StrictMode>
     <ArticlesProvider>
       <SearchBarProvider>
         <App />
       </SearchBarProvider>
     </ArticlesProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );

@@ -24,7 +24,7 @@ const ArticleDetail: React.FC = () => {
     } else {
       const fetchArticle = async () => {
         try {
-          const response = await fetch(`${API_ENDPOINT}/news/${id}`);
+          const response = await fetch(`${API_ENDPOINT}/news/id/${id}`);
           if (!response.ok) {
             throw new Error('Article not found');
           }
@@ -63,6 +63,10 @@ const ArticleDetail: React.FC = () => {
 
   const handleDialogMouseLeave = () => {
     setTargetDialog(null);
+  };
+
+  const handleSpeakerClick = (speaker: string) => {
+    navigate(`/speaker/${speaker}`);
   };
 
   const getDialogById = (dialogs: Dialog[], id: number): Dialog | null => {
@@ -113,7 +117,13 @@ const ArticleDetail: React.FC = () => {
             onMouseEnter={() => handleDialogMouseEnter(dialog.id)}
             onMouseLeave={handleDialogMouseLeave}
           >
-            <img src={GuestUserIcon} alt="User Icon" className="dialog-icon" />
+            <img
+              src={GuestUserIcon}
+              alt="User Icon"
+              className="dialog-icon"
+              onClick={() => handleSpeakerClick(dialog.speaker)}
+              style={{ cursor: 'pointer' }}
+            />
             <div className="dialog-content">
               <p>
                 <strong>{dialog.speaker}:</strong>

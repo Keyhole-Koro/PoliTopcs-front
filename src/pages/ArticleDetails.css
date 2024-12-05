@@ -144,3 +144,13 @@
   font-size: 14px;
   color: #555;
 }
+
+.speaker-link {
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.speaker-link:hover {
+  color: #0056b3;
+}
