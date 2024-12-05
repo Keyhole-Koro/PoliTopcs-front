@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useArticles } from '@contexts/ArticlesContext';
 import { Article, Dialog, Reaction } from '@interfaces/Article';
 import GuestUserIcon from '@materials/GuestUser.png'; // Import the icon
+import HighlightedContent from '@components/HighlightedContent';
+import Tooltip from '@components/Tooltip';
 
 const ArticleDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -73,7 +75,7 @@ const ArticleDetail: React.FC = () => {
     if (targetDialog.id === dialog_id) return '';
   
     const highlightedDialog = 
-      targetDialog.response_to.find(response => response.dialog_id === dialog_id);
+      getDialogById(article.dialogs, dialog_id)?.response_to.find(response => response.dialog_id === targetDialog.id);
 
     if (!highlightedDialog) return 'highlight unrelated';
     
@@ -88,7 +90,6 @@ const ArticleDetail: React.FC = () => {
 
   return (
     <div className="article-details">
-      <button onClick={() => navigate(-1)} className="back-button">Back to Headlines</button>
       <div className="article-content">
         <h1 className="article-title">{article.title}</h1>
         <div className="article-meta">
@@ -105,7 +106,7 @@ const ArticleDetail: React.FC = () => {
       </div>
       <h2>Dialogs</h2>
       <div className="dialogs">
-        {article.dialogs.map((dialog) => (
+      {article.dialogs.map((dialog) => (
           <div
             key={dialog.id}
             className={`dialog ${highlight(dialog.id)}`}
@@ -114,7 +115,10 @@ const ArticleDetail: React.FC = () => {
           >
             <img src={GuestUserIcon} alt="User Icon" className="dialog-icon" />
             <div className="dialog-content">
-              <p><strong>{dialog.speaker}:</strong> {dialog.summary}</p>
+              <p>
+                <strong>{dialog.speaker}:</strong>
+                <HighlightedContent description={dialog.summary} terms={article.terms} />
+              </p>
             </div>
           </div>
         ))}

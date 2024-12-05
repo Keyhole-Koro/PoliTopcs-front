@@ -6,7 +6,14 @@ export interface Article {
   summary: string;
   description: string;
   dialogs: Dialog[];
+  participants: string[];
   keywords: string[];
+  terms: Term[];
+}
+
+export interface Term {
+  term: string;
+  definition: string;
 }
 
 export interface Dialog {

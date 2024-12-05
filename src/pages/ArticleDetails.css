@@ -6,20 +6,6 @@
   background-color: #f9f9f9;
 }
 
-.back-button {
-  margin-bottom: 20px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.back-button:hover {
-  background-color: #0056b3;
-}
-
 .article-content {
   margin-bottom: 40px;
   max-width: 800px;
@@ -78,13 +64,13 @@
   padding: 10px;
   border: 2px solid transparent;
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #f0f0f0;
   cursor: pointer;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .dialog:hover {
-  background-color: #f1f1f1;
+  background-color: #f0f0f0;
 }
 
 .dialog-icon {
