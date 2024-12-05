@@ -5,7 +5,7 @@ import { useArticles } from '@contexts/ArticlesContext';
 import { Article, Dialog, Reaction } from '@interfaces/Article';
 import GuestUserIcon from '@materials/GuestUser.png'; // Import the icon
 import HighlightedContent from '@components/HighlightedContent';
-import Tooltip from '@components/Tooltip';
+import Header from '@components/Header'; // Import the Header component
 
 const ArticleDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -51,9 +51,8 @@ const ArticleDetail: React.FC = () => {
     navigate(`/article/${id}`);
   };
 
-  const handleKeywordClick = (event: React.MouseEvent, keyword: string) => {
-    event.stopPropagation();
-    // Implement keyword click handling if needed
+  const handleKeywordClick = (keyword: string) => {
+    navigate(`/?keyword=${keyword}`);
   };
 
   const handleDialogMouseEnter = (dialogId: number) => {
@@ -94,6 +93,7 @@ const ArticleDetail: React.FC = () => {
 
   return (
     <div className="article-details">
+      <Header /> {/* Include the Header component */}
       <div className="article-content">
         <h1 className="article-title">{article.title}</h1>
         <div className="article-meta">
@@ -102,7 +102,7 @@ const ArticleDetail: React.FC = () => {
         <p className="article-description">{article.description}</p>
         <div className="article-keywords">
           {article.keywords.map((keyword, index) => (
-            <span key={index} className="keyword" onClick={(event) => handleKeywordClick(event, keyword)}>
+            <span key={index} className="keyword" onClick={() => handleKeywordClick(keyword)}>
               {keyword}
             </span>
           ))}

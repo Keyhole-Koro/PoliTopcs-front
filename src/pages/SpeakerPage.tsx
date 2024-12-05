@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './SpeakerPage.css';
 import { Article } from '@interfaces/Article';
+import Header from '@components/Header'; // Import the Header component
 
 const SpeakerPage: React.FC = () => {
   const { speaker } = useParams<{ speaker: string }>();
@@ -32,6 +33,7 @@ const SpeakerPage: React.FC = () => {
 
   return (
     <div className="speaker-page">
+      <Header /> {/* Include the Header component */}
       <h1>Articles featuring {speaker}</h1>
       <div className="articles-list">
         {articles.map(article => (
@@ -39,7 +41,7 @@ const SpeakerPage: React.FC = () => {
             <h3>{article.title}</h3>
             <p>{article.description}</p>
             <blockquote className="article-quote">
-              {article.participants.find(prtcpnt => prtcpnt.name === speaker)?.summary || 'No summary available'}
+              {article.dialogs.find(dialog => dialog.speaker === speaker)?.summary || 'No summary available'}
             </blockquote>
             <span className="article-date">{article.date}</span>
           </div>

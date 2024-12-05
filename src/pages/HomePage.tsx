@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Tile from '@components/Tile';
 import { useArticles } from '@contexts/ArticlesContext';
 import { useSearchBar } from '@contexts/SearchBarContext';
@@ -22,7 +22,14 @@ const HomePage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  const location = useLocation();
+
   const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+
+  useEffect(() => {
+    // Restore the count from the ref when the component mounts
+    setCount(countRef.current);
+  }, []);
 
   useEffect(() => {
     const fetchTopHeadlines = async () => {
@@ -42,9 +49,16 @@ const HomePage: React.FC = () => {
   }, [count]);
 
   useEffect(() => {
-    // Restore the count from the ref when the component mounts
-    setCount(countRef.current);
-  }, []);
+    const params = new URLSearchParams(location.search);
+    const keyword = params.get('keyword');
+    if (keyword) {
+      setSearchTerm(keyword);
+    }
+  }, [location]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   useEffect(() => {
     if (debouncedSearchTerm) {
