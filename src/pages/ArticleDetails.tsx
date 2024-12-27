@@ -18,7 +18,7 @@ const ArticleDetail: React.FC = () => {
   const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 
   useEffect(() => {
-    const localArticle = articles.find(a => a.id === parseInt(id || '', 10));
+    const localArticle = articles.find(a => a.id === id);
     if (localArticle) {
       setArticle(localArticle);
     } else {
@@ -47,7 +47,7 @@ const ArticleDetail: React.FC = () => {
     headline => headline.category === article.category && headline.id !== article.id
   );
 
-  const handleHeadlineClick = (id: number) => {
+  const handleHeadlineClick = (id: string) => {
     navigate(`/article/${id}`);
   };
 
@@ -101,7 +101,7 @@ const ArticleDetail: React.FC = () => {
         </div>
         <p className="article-description">{article.description}</p>
         <div className="article-keywords">
-          {article.keywords.map((keyword, index) => (
+          {Array.isArray(article.keywords) && article.keywords.map((keyword, index) => (
             <span key={index} className="keyword" onClick={() => handleKeywordClick(keyword)}>
               {keyword}
             </span>

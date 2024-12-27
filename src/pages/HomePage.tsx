@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Tile from '@components/Tile';
+import Header from '@components/Header';
 import { useArticles } from '@contexts/ArticlesContext';
 import { useSearchBar } from '@contexts/SearchBarContext';
 import useDebounce from '@hooks/useDebounce';
 import { Article } from '@interfaces/Article';
 import './HomePage.css';
+import KeywordList from '@components/KeywordList';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +18,8 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(false);
   const countRef = useRef(count);
+
+  const topStories = "最新のニュース";
 
   const [dateFilter, setDateFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -67,6 +71,7 @@ const HomePage: React.FC = () => {
         try {
           const response = await fetch(`${API_ENDPOINT}/news?keyword=${debouncedSearchTerm}`);
           const data = await response.json();
+          
           setArticles(data.articles);
         } catch (error) {
           console.error('Error fetching articles by search term:', error);
@@ -83,6 +88,7 @@ const HomePage: React.FC = () => {
         try {
           const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${count}`);
           const data = await response.json();
+          
           setArticles(data.articles);
         } catch (error) {
           console.error('Error fetching top headlines:', error);
@@ -99,7 +105,7 @@ const HomePage: React.FC = () => {
     }
   }, [debouncedSearchTerm]);
 
-  const handleHeadlineClick = (id: number) => {
+  const handleHeadlineClick = (id: string) => {
     navigate(`/article/${id}`);
   };
 
@@ -113,8 +119,9 @@ const HomePage: React.FC = () => {
         try {
           const response = await fetch(`${API_ENDPOINT}/news?category=${selectedCategory}&keyword=${searchTerm}`);
           const data = await response.json();
+          
           setArticles(prevArticles => {
-            const newArticles = data.articles.filter((newArticle: { id: number; }) => 
+            const newArticles = data.articles.filter((newArticle: Article) => 
               !prevArticles.some(existingArticle => existingArticle.id === newArticle.id)
             );
             return [...prevArticles, ...newArticles];
@@ -138,8 +145,9 @@ const HomePage: React.FC = () => {
       try {
         const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${countRef.current}`);
         const data = await response.json();
+        
         setArticles(prevArticles => {
-          const newArticles = data.articles.filter((newArticle: { id: number; }) => 
+          const newArticles = data.articles.filter((newArticle: Article) => 
             !prevArticles.some(existingArticle => existingArticle.id === newArticle.id)
           );
           return [...prevArticles, ...newArticles];
@@ -159,8 +167,9 @@ const HomePage: React.FC = () => {
     try {
       const response = await fetch(`${API_ENDPOINT}/news?keyword=${keyword}`);
       const data = await response.json();
+      
       setArticles(prevArticles => {
-        const newArticles = data.articles.filter((newArticle: { id: number; }) => 
+        const newArticles = data.articles.filter((newArticle: Article) => 
           !prevArticles.some(existingArticle => existingArticle.id === newArticle.id)
         );
         return [...prevArticles, ...newArticles];
@@ -170,24 +179,9 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleCategoryClick = (category: string) => {
-    if (selectedCategory === category) {
-      setSelectedCategory(null);
-      setCategoryFilter('');
-    } else {
-      setSelectedCategory(category);
-      setCategoryFilter(category);
-    }
-  };
-
-  const handleKeywordClick = (event: React.MouseEvent, keyword: string) => {
-    event.stopPropagation();
+  const handleKeywordClick = (keyword: string) => {
     setSearchTerm(keyword);
     fetchArticlesByKeyword(keyword);
-  };
-
-  const clearSearch = () => {
-    setSearchTerm('');
   };
 
   const filteredHeadlines = articles
@@ -201,74 +195,38 @@ const HomePage: React.FC = () => {
         .sort((a, b) => sortOrder === 'asc' ? new Date(a.date).getTime() - new Date(b.date).getTime() : new Date(b.date).getTime() - new Date(a.date).getTime())
     : [];
 
-  const categories = articles ? Array.from(new Set(articles.map(headline => headline.category))) : [];
+  const keywords = articles ? Array.from(new Set(articles.map(headline => headline.category))) : [];
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <div className="logo-container">
-          <h1 className="app-title">PoliTopics</h1>
+    <div>
+      <Header />
+      <KeywordList keywords={keywords} handleKeywordClick={handleKeywordClick} />
+      <div className="app">
+        <div className="top-headlines">
+          <h2>{topStories}</h2>
+          {loading ? (
+            <div className="loading">Loading...</div>
+          ) : (
+            <div className="headline-tiles">
+                {filteredHeadlines.map((article) => (
+                <Tile
+                  key={"_tile_" + article.id}
+                  headline={article}
+                  width="calc(33.33% - 40px)"
+                  onClick={() => handleHeadlineClick(article.id)}
+                  handleKeywordClick={handleKeywordClick}
+                />
+              ))}
+            </div>
+          )}
+          {articles === undefined && <div>No articles available.</div>}
         </div>
-      </header>
-      <div className="top-headlines">
-        <h2>Top Stories</h2>
-        <div className="filter-container">
-          <div className="search-bar-container">
-            <input
-              type="text"
-              placeholder="Search headlines..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-bar"
-            />
-            {searchTerm && <button onClick={clearSearch} className="clear-button">&times;</button>}
-          </div>
-          <input
-            type="date"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className="date-filter"
-          />
-          <i className="fas fa-filter filter-icon"></i>
-          <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')} className="sort-button">
-            Sort by Date <i className={`fas fa-sort-${sortOrder === 'asc' ? 'up' : 'down'}`}></i>
+        {showMoreButtonVisible && (
+          <button onClick={toggleShowAll} className="toggle-button">
+            Show More
           </button>
-        </div>
-        <div className="category-bar">
-          <div className="category-bar-inner">
-            {categories.map(category => (
-              <button
-                key={category}
-                onClick={() => handleCategoryClick(category)}
-                className={`category-button ${selectedCategory === category ? 'active' : ''}`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-        {loading ? (
-          <div className="loading">Loading...</div>
-        ) : (
-          <div className="headline-tiles">
-            {filteredHeadlines.map((article) => (
-              <Tile
-                key={article.id}
-                headline={article}
-                width="calc(33.33% - 40px)"
-                onClick={() => handleHeadlineClick(article.id)}
-                handleKeywordClick={handleKeywordClick}
-              />
-            ))}
-          </div>
         )}
-        {articles === undefined && <div>No articles available.</div>}
       </div>
-      {showMoreButtonVisible && (
-        <button onClick={toggleShowAll} className="toggle-button">
-          Show More
-        </button>
-      )}
     </div>
   );
 };

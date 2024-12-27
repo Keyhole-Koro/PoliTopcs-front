@@ -13,25 +13,6 @@
   justify-content: center;
 }
 
-.search-bar-container {
-  position: relative;
-}
-
-.search-bar {
-  padding: 10px;
-  border: 2px solid #ccc;
-  border-radius: 25px;
-  width: 300px;
-  font-size: 16px;
-  transition: all 0.3s ease;
-}
-
-.search-bar:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
-  outline: none;
-}
-
 .clear-button {
   position: absolute;
   right: 10px;
@@ -46,79 +27,6 @@
 
 .clear-button:hover {
   color: #333;
-}
-
-.date-filter {
-  padding: 10px;
-  margin-left: 10px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-.sort-button {
-  padding: 10px 20px;
-  margin-left: 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.sort-button:hover {
-  background-color: #0056b3;
-}
-
-.category-bar {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.category-bar-inner {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.category-button {
-  padding: 10px;
-  margin: 5px;
-  border: none;
-  background-color: #f0f0f0;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.category-button.active {
-  background-color: #007bff;
-  color: white;
-}
-
-.category-button:hover {
-  background-color: #0056b3;
-  color: white;
-}
-
-.keyword {
-  display: inline-block;
-  background-color: #e0e0e0;
-  color: #333;
-  padding: 5px 10px;
-  margin: 5px;
-  border-radius: 15px;
-  font-size: 12px; /* Reduced font size */
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.keyword:hover {
-  background-color: #ccc;
 }
 
 .toggle-button {

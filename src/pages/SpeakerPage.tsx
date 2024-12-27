@@ -27,7 +27,7 @@ const SpeakerPage: React.FC = () => {
     fetchArticles();
   }, [speaker]);
 
-  const handleArticleClick = (id: number) => {
+  const handleArticleClick = (id: string) => {
     navigate(`/article/${id}`);
   };
 

@@ -1,8 +1,10 @@
+import './SearchBar.css'
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface SearchBarContextProps {
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  clearSearch: () => void;
 }
 
 const SearchBarContext = createContext<SearchBarContextProps | undefined>(undefined);
@@ -22,8 +24,12 @@ interface SearchBarProviderProps {
 export const SearchBarProvider: React.FC<SearchBarProviderProps> = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
+  const clearSearch = () => {
+    setSearchTerm('');
+  };
+
   return (
-    <SearchBarContext.Provider value={{ searchTerm, setSearchTerm }}>
+    <SearchBarContext.Provider value={{ searchTerm, setSearchTerm, clearSearch }}>
       {children}
     </SearchBarContext.Provider>
   );
