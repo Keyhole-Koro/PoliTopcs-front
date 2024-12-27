@@ -11,6 +11,7 @@ module.exports = (config, env) => {
       '@components': path.resolve(__dirname, 'src/components/'),
       '@pages': path.resolve(__dirname, 'src/pages/'),
       '@contexts': path.resolve(__dirname, 'src/contexts/'),
+      '@api': path.resolve(__dirname, 'src/api/'),
       '@hooks': path.resolve(__dirname, 'src/hooks/'),
       '@materials': path.resolve(__dirname, 'src/materials/'),
       '@utils': path.resolve(__dirname, 'src/utils/'),

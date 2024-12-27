@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Tile from '@components/Tile';
 import Header from '@components/Header';
+import useArticleAPI from '@api/articleAPI';
 import { useArticles } from '@contexts/ArticlesContext';
 import { useSearchBar } from '@contexts/SearchBarContext';
 import useDebounce from '@hooks/useDebounce';
@@ -26,9 +27,12 @@ const HomePage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const location = useLocation();
+  const {
+    TopHeadlines,
+    ArticlesByKeyword,
+  } = useArticleAPI();
 
-  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+  const location = useLocation();
 
   useEffect(() => {
     // Restore the count from the ref when the component mounts
@@ -39,11 +43,7 @@ const HomePage: React.FC = () => {
     const fetchTopHeadlines = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${count}`);
-        const data = await response.json();
-        setArticles(data.articles);
-      } catch (error) {
-        console.error('Error fetching top headlines:', error);
+        setArticles(await TopHeadlines(countRef.current));
       } finally {
         setLoading(false);
       }
@@ -60,19 +60,13 @@ const HomePage: React.FC = () => {
     }
   }, [location]);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
   useEffect(() => {
     if (debouncedSearchTerm) {
       const fetchArticlesBySearchTerm = async () => {
         setLoading(true);
         try {
-          const response = await fetch(`${API_ENDPOINT}/news?keyword=${debouncedSearchTerm}`);
-          const data = await response.json();
           
-          setArticles(data.articles);
+          setArticles(await ArticlesByKeyword(debouncedSearchTerm));
         } catch (error) {
           console.error('Error fetching articles by search term:', error);
         } finally {
@@ -86,10 +80,8 @@ const HomePage: React.FC = () => {
       const fetchTopHeadlines = async () => {
         setLoading(true);
         try {
-          const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${count}`);
-          const data = await response.json();
-          
-          setArticles(data.articles);
+
+          setArticles(await TopHeadlines(countRef.current));
         } catch (error) {
           console.error('Error fetching top headlines:', error);
         } finally {
@@ -117,15 +109,10 @@ const HomePage: React.FC = () => {
       const fetchArticles = async () => {
         setLoading(true);
         try {
-          const response = await fetch(`${API_ENDPOINT}/news?category=${selectedCategory}&keyword=${searchTerm}`);
-          const data = await response.json();
-          
-          setArticles(prevArticles => {
-            const newArticles = data.articles.filter((newArticle: Article) => 
-              !prevArticles.some(existingArticle => existingArticle.id === newArticle.id)
-            );
-            return [...prevArticles, ...newArticles];
-          });
+          const newArticles = (await ArticlesByKeyword(searchTerm)).filter((newArticle: Article) => 
+            !articles.some(existingArticle => existingArticle.id === newArticle.id)
+          );
+          setArticles(prevArticles => [...prevArticles, ...newArticles]);
         } catch (error) {
           console.error('Error fetching articles:', error);
         } finally {
@@ -142,46 +129,25 @@ const HomePage: React.FC = () => {
         return newCount;
       });
 
-      try {
-        const response = await fetch(`${API_ENDPOINT}/top-headlines?count=${countRef.current}`);
-        const data = await response.json();
-        
-        setArticles(prevArticles => {
-          const newArticles = data.articles.filter((newArticle: Article) => 
-            !prevArticles.some(existingArticle => existingArticle.id === newArticle.id)
-          );
-          return [...prevArticles, ...newArticles];
-        });
-        if (prevArticlesLength === data.length) {
-          setShowMoreButtonVisible(false);
-        } else {
-          setShowMoreButtonVisible(true);
-        }
-      } catch (error) {
-        console.error('Error fetching top headlines:', error);
-      }
-    }
-  };
-
-  const fetchArticlesByKeyword = async (keyword: string) => {
-    try {
-      const response = await fetch(`${API_ENDPOINT}/news?keyword=${keyword}`);
-      const data = await response.json();
-      
+      const articles = await TopHeadlines(countRef.current);
+              
       setArticles(prevArticles => {
-        const newArticles = data.articles.filter((newArticle: Article) => 
+        const newArticles = articles.filter((newArticle: Article) => 
           !prevArticles.some(existingArticle => existingArticle.id === newArticle.id)
         );
         return [...prevArticles, ...newArticles];
       });
-    } catch (error) {
-      console.error('Error fetching articles:', error);
+      if (prevArticlesLength === articles.length) {
+        setShowMoreButtonVisible(false);
+      } else {
+        setShowMoreButtonVisible(true);
+      }
     }
   };
 
   const handleKeywordClick = (keyword: string) => {
     setSearchTerm(keyword);
-    fetchArticlesByKeyword(keyword);
+    ArticlesByKeyword(keyword);
   };
 
   const filteredHeadlines = articles

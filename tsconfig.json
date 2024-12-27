@@ -24,6 +24,7 @@
       "@interfaces/*": ["interfaces/*"],
       "@components/*": ["components/*"],
       "@pages/*": ["pages/*"],
+      "@api/*": ["api/*"],
       "@contexts/*": ["contexts/*"],
       "@hooks/*": ["hooks/*"],
       "@materials/*": ["materials/*"],
