@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import './Tile.css'; // Import the CSS file for Tile
 import { Article } from '@interfaces/Article';
 import KeywordList from './KeywordList';
@@ -6,15 +6,15 @@ import KeywordList from './KeywordList';
 interface TileProps {
   headline: Article;
   width: string;
-  onClick: () => void;
-  handleKeywordClick: (keyword: string) => void;
+  handleTileClick: (id: string, event: MouseEvent) => void;
+  handleKeywordClick: (keyword: string, event: MouseEvent) => void;
 }
 
-const Tile: React.FC<TileProps> = ({ headline, width, onClick, handleKeywordClick }) => {
+const Tile: React.FC<TileProps> = ({ headline, width, handleTileClick, handleKeywordClick }) => {
   return (
     <div
       key={"tile" + headline.id}
-      onClick={() => onClick()}
+      onClick={(event) => handleTileClick(headline.id, event)}
       className="headline-tile"
       style={{ width: `${width}px` }}
     >

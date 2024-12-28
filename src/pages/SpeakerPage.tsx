@@ -12,12 +12,15 @@ const SpeakerPage: React.FC = () => {
   const navigate = useNavigate();
   const [articles, setArticles] = useState<Article[]>([]);
 
-  const { SpeakerByName } = useArticleAPI();
+  const { fetchArticlesBySpeaker } = useArticleAPI();
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        if (speaker) setArticles(await SpeakerByName(speaker));
+        if (speaker) {
+          const articles = await fetchArticlesBySpeaker(speaker);
+          setArticles(articles);
+        }
       } catch (error) {
         console.error('Error fetching articles:', error);
       }

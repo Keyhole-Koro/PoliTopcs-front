@@ -6,13 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import { useSearchBar } from '@contexts/SearchBarContext';
 
 import header_icon from '@materials/politopics_icon.png';
+import { clear } from 'console';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const { searchTerm, setSearchTerm, clearSearch } = useSearchBar();
-  
 
   const handleLogoClick = () => {
+    clearSearch();
     navigate('/');
   };
 

@@ -18,7 +18,7 @@ const ArticleDetail: React.FC = () => {
   const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 
   useEffect(() => {
-    const localArticle = articles.find(a => a.id === id);
+    const localArticle = articles ? articles.find(a => a.id === id) : null;
     if (localArticle) {
       setArticle(localArticle);
     } else {
@@ -43,9 +43,9 @@ const ArticleDetail: React.FC = () => {
     return <div>Article not found</div>;
   }
 
-  const relatedHeadlines = articles.filter(
+  const relatedHeadlines = articles ? articles.filter(
     headline => headline.category === article.category && headline.id !== article.id
-  );
+  ) : [];
 
   const handleHeadlineClick = (id: string) => {
     navigate(`/article/${id}`);

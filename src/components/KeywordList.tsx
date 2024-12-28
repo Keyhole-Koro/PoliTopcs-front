@@ -4,7 +4,7 @@ import React from 'react';
 
 interface KeywordListProps {
     keywords: string[];
-    handleKeywordClick: (keyword: string) => void;
+    handleKeywordClick: (keyword: string, event: React.MouseEvent<HTMLSpanElement>) => void;
     justify_content?: string;
 }
 
@@ -12,15 +12,15 @@ const KeywordList: React.FC<KeywordListProps> = ({ keywords, handleKeywordClick,
     return (
         <div className="keyword-list" style={{ justifyContent: justify_content }}>
             <div className="keyword-list-inner">
-                {keywords.map(keyword => (
+                {Array.isArray(keywords) ? keywords.map(keyword => (
                     <span
                         key={"keyword"+keyword}
                         className='keyword'
-                        onClick={() => handleKeywordClick(keyword)}
+                        onClick={(event) => handleKeywordClick(keyword, event)}
                         >
                         {keyword}
                     </span>
-                ))}
+                )) : []}
             </div>
       </div>
     );
