@@ -93,7 +93,7 @@ const ArticleDetail: React.FC = () => {
 
   return (
     <div className="article-details">
-      <Header /> {/* Include the Header component */}
+      <Header />
       <div className="article-content">
         <h1 className="article-title">{article.title}</h1>
         <div className="article-meta">

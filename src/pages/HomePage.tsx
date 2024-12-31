@@ -4,27 +4,39 @@ import React, { MouseEvent, useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Article } from '@interfaces/Article';
-import Tile from '@components/Tile';
 import Header from '@components/Header';
+import TopCategories from '@components/TopCategories';
 import KeywordList from '@components/KeywordList';
+import NewsSection from '@components/NewsSection';
 import { useArticles } from '@contexts/ArticlesContext';
 import { useSearchBar } from '@contexts/SearchBarContext';
 import useArticleAPI from '@api/articleAPI';
 import useDebounce from '@hooks/useDebounce';
+
+interface ArticleSection {
+  sectionName: string;
+  articles: Article[] | undefined;
+}
 
 const HomePage: React.FC = () => {
 
   const navigate = useNavigate();
   const { articles, setArticles } = useArticles();
   const { searchTerm, setSearchTerm } = useSearchBar();
-  const debouncedSearchTerm = useDebounce(searchTerm, 300); // 300ms debounce delay
+  //const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [ showMoreButtonVisible, setShowMoreButtonVisible ] = useState(true);
   const [ loading, setLoading ] = useState(false);
 
   const topStories = "最新のニュース";
   const ShowMore = "もっと見る";
 
-  const [ numOfTopHeadlines, setNumOfTopHeadlines ] = useState(5);
+  const articleSection: ArticleSection[] = [{
+    sectionName: 'トップストーリ',
+    articles: articles
+  },
+]
+
+  const [ numOfTopHeadlines, setNumOfTopHeadlines ] = useState(3  );
 
   const {
     fetchTopHeadlines,
@@ -58,7 +70,7 @@ const HomePage: React.FC = () => {
     const fetchArticlesBySearchTerm = async () => {
       setLoading(true);
       try {
-        setArticles(await fetchArticlesByKeyword(debouncedSearchTerm));
+        setArticles(await fetchArticlesByKeyword(searchTerm));
       } catch (error) {
         console.error('Error fetching articles by search term:', error);
       } finally {
@@ -66,7 +78,8 @@ const HomePage: React.FC = () => {
       }
     };
 
-    if (debouncedSearchTerm === '') {
+    if (searchTerm === '') {
+      // shows top headlines
       const fetchTopHeadlines_ = async () => {
         setArticles(await fetchTopHeadlines(numOfTopHeadlines));
       };
@@ -75,7 +88,7 @@ const HomePage: React.FC = () => {
       fetchArticlesBySearchTerm();
     }
 
-  }, [searchTerm, debouncedSearchTerm]);
+  }, [searchTerm, searchTerm]);
 
   const handleTileClick = (id: string, event: MouseEvent) => {
     event.stopPropagation();
@@ -83,7 +96,7 @@ const HomePage: React.FC = () => {
   };
 
   const toggleShowMore = async () => {
-
+    setNumOfTopHeadlines(numOfTopHeadlines + 5);
   };
 
   const handleKeywordClick = (keyword: string, event: MouseEvent) => {
@@ -93,37 +106,26 @@ const HomePage: React.FC = () => {
 
   const categories = articles ? Array.from(new Set(articles.map(headline => headline.category))) : [];
 
-  const headlines = articles ? articles.slice(0, numOfTopHeadlines) : [];
+  const topCategories = ['すべて', '予算案', '法案', '調査'];
 
+  //<TopCategories categories={topCategories} />
   return (
     <div>
       <Header />
       <KeywordList keywords={categories} handleKeywordClick={handleKeywordClick} justify_content='center' />
       <div className="app">
         <div className="top-headlines">
-          <h2>{topStories}</h2>
-          {loading ? (
-            <div className="loading">Loading...</div>
-          ) : (
-            <div className="headline-tiles">
-                {headlines.map((article) => (
-                <Tile
-                  key={"_tile_" + article.id}
-                  headline={article}
-                  width="calc(33.33% - 40px)"
-                  handleTileClick={handleTileClick}
-                  handleKeywordClick={handleKeywordClick}
-                />
-              ))}
-            </div>
-          )}
+            {articleSection.map(section => (
+              <NewsSection
+                key={section.sectionName}
+                sectionName={section.sectionName}
+                articles={section.articles || []}
+                handleTileClick={handleTileClick}
+                handleKeywordClick={handleKeywordClick}
+              />
+            ))}
           {articles === undefined && <div>No articles available.</div>}
         </div>
-        {showMoreButtonVisible && (
-          <button onClick={toggleShowMore} className="toggle-button">
-            {ShowMore}
-          </button>
-        )}
       </div>
     </div>
   );

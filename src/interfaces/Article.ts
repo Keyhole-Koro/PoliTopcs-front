@@ -7,6 +7,7 @@ export interface Article {
   description: string;
   dialogs: Dialog[];
   participants: participants[];
+  tags: string[];
   keywords: string[];
   terms: Term[];
 }

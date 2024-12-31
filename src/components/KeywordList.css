@@ -1,45 +1,30 @@
-
 .keyword-list {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-  
-  .keyword-list-inner {
     display: flex;
     flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .keyword-list.left {
+    justify-content: flex-start;
+  }
+  
+  .keyword-list.center {
     justify-content: center;
   }
   
-  .keyword-button {
-    padding: 10px;
-    margin: 5px;
-    border: none;
+  .keyword-list-item {
     background-color: #f0f0f0;
-    cursor: pointer;
+    color: #707070;
+    padding: 6px 12px;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .keyword-button:hover {
-    background-color: #0056b3;
-    color: white;
-  }
-
-  .keyword {
-    display: inline-block;
-    background-color: #e0e0e0;
-    color: #333;
-    padding: 5px 10px;
-    margin: 5px;
-    border-radius: 15px;
-    font-size: 15px; /* Reduced font size */
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
   }
   
-  .keyword:hover {
-    background-color: #ccc;
+  .keyword-list-item:hover {
+    background-color: #d8d8d8;
+    transform: scale(1.05);
   }
   

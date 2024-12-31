@@ -35,7 +35,7 @@ const SpeakerPage: React.FC = () => {
 
   return (
     <div className="speaker-page">
-      <Header /> {/* Include the Header component */}
+      <Header />
       <h1>Articles featuring {speaker}</h1>
       <div className="articles-list">
         {articles.map(article => (
