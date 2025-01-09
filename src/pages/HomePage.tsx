@@ -16,23 +16,47 @@ import useDebounce from '@hooks/useDebounce';
 interface ArticleSection {
   sectionName: string;
   articles: Article[] | undefined;
+  path: string;
 }
 
 const HomePage: React.FC = () => {
 
   const navigate = useNavigate();
   const { articles, setArticles } = useArticles();
-  const { searchTerm, setSearchTerm } = useSearchBar();
+  const { searchTerm, setSearchTerm, clearSearch } = useSearchBar();
   //const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [ showMoreButtonVisible, setShowMoreButtonVisible ] = useState(true);
   const [ loading, setLoading ] = useState(false);
-
+  
   const topStories = "最新のニュース";
   const ShowMore = "もっと見る";
 
+  const topCategories = ['すべて', '予算', '決算', '法案', '調査'];
+
   const articleSection: ArticleSection[] = [{
     sectionName: 'トップストーリ',
-    articles: articles
+    articles: articles,
+    path: '/top-stories'
+  },
+  {
+    sectionName: '予算',
+    articles: articles,
+    path: '/budget'
+  },
+  {
+    sectionName: '決算',
+    articles: articles,
+    path: '/settlement'
+  },
+  {
+    sectionName: '法案',
+    articles: articles,
+    path: '/bill'
+  },
+  {
+    sectionName: '調査',
+    articles: articles,
+    path: '/survey'
   },
 ]
 
@@ -106,12 +130,22 @@ const HomePage: React.FC = () => {
 
   const categories = articles ? Array.from(new Set(articles.map(headline => headline.category))) : [];
 
-  const topCategories = ['すべて', '予算案', '法案', '調査'];
-
   //<TopCategories categories={topCategories} />
   return (
     <div>
       <Header />
+
+      <div className="home-search-bar-container">
+        <input
+          type="text"
+          placeholder="Search headlines..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="home-search-bar"
+        />
+        {searchTerm && <button onClick={clearSearch} className="clear-button">&times;</button>}
+      </div>
+
       <KeywordList keywords={categories} handleKeywordClick={handleKeywordClick} justify_content='center' />
       <div className="app">
         <div className="top-headlines">
@@ -120,8 +154,13 @@ const HomePage: React.FC = () => {
                 key={section.sectionName}
                 sectionName={section.sectionName}
                 articles={section.articles || []}
+                path={section.path}
                 handleTileClick={handleTileClick}
                 handleKeywordClick={handleKeywordClick}
+                handleSectionClick={(sectionName, event) => {
+                  event.stopPropagation();
+                  console.log(`Section clicked: ${sectionName}`);
+                }}
               />
             ))}
           {articles === undefined && <div>No articles available.</div>}

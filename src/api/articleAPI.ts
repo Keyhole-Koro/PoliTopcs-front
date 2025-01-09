@@ -39,6 +39,29 @@ const useArticleAPI = () => {
     }
   };
 
+  const fetchArticleByCategory = async (category: string): Promise<Article[]> => {
+    const cacheKey = `category-${category}`;
+
+    // Check if data exists in cache
+    const cachedArticles = cacheManager.get<Article[]>(cacheKey);
+    if (cachedArticles) {
+      return cachedArticles;
+    }
+
+    try {
+      const response = await fetch(`${API_ENDPOINT}/category/${category}`);
+      if (!response.ok) throw new Error('Failed to fetch articles by category');
+
+      const data = await response.json();
+      setArticles(data.articles); // Save data to context state
+      cacheManager.set(cacheKey, data.articles); // Save data to cache
+      return data.articles;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to fetch articles by category');
+    }
+  }
+
   // Fetch articles by keyword from API or cache
   const fetchArticlesByKeyword = async (keyword: string): Promise<Article[]> => {
     const cacheKey = `articles-keyword-${keyword}`;

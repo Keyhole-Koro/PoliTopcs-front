@@ -47,7 +47,6 @@ const Tile: React.FC<TileProps> = ({ headline, width, handleTileClick, handleKey
 };
 
 /*
-
       <div className="headline-tags">
         {headline.tags?.map((tag, index) => (
           <span key={index} className="headline-tag">

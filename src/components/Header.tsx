@@ -21,24 +21,27 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="logo" onClick={handleLogoClick}>
         <img src={header_icon} alt="Logo" />
+        <div className="header-search-bar-container">
+          <input
+            type="text"
+            placeholder="Search headlines..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-bar"
+          />
+          {searchTerm && <button onClick={clearSearch} className="clear-button">&times;</button>}
+        </div>
+      </div>
+    </header>
+  );
+};
+
+/*
         <ul className='menu'>
           <li className='menu-item'><a href='/'>Home</a></li>
           <li className='menu-item'><a href='/about'>About</a></li>
           <li className='menu-item'><a href='/contact'>Contact</a></li>
         </ul>
-        <div className="search-bar-container">
-              <input
-                type="text"
-                placeholder="Search headlines..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-bar"
-              />
-              {searchTerm && <button onClick={clearSearch} className="clear-button">&times;</button>}
-            </div>
-      </div>
-    </header>
-  );
-};
+        */
 
 export default Header;

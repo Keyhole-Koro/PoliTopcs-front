@@ -1,5 +1,5 @@
 body {
-  background-color: #f7f9fa; /* ここで色を変更 */
+  background-color: #f7f9fa;
 }
 
 .top-headlines {
@@ -60,4 +60,28 @@ body {
   text-align: center;
   font-size: 1.5em;
   padding: 20px;
+}
+
+.home-search-bar {
+  display: flex;
+  margin-bottom: 20px;
+  width: 70vw;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.home-search-bar:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.home-search-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
