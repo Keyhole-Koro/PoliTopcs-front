@@ -9,27 +9,42 @@ interface NewsSectionProps {
   sectionName: string;
   articles: Article[];
   path: string;
-  numOfShownArticles?: number;
+  numOfShownArticles: number;
   handleTileClick: (id: string, event: React.MouseEvent) => void;
   handleKeywordClick: (keyword: string, event: React.MouseEvent) => void;
   handleSectionClick: (sectionName: string, event: React.MouseEvent) => void;
 }
 
 const NewsSection: React.FC<NewsSectionProps> = ({ sectionName, articles, path, numOfShownArticles, handleTileClick, handleKeywordClick, handleSectionClick }) => {
-  const initialArticlesToShow = numOfShownArticles && numOfShownArticles <= 3 ? numOfShownArticles : 3;
-  const [articlesToShow, setArticlesToShow] = useState(initialArticlesToShow);
+  const [articlesToShow, setArticlesToShow] = useState(numOfShownArticles);
+  const [showTiles, setShowTiles] = useState(numOfShownArticles === 0 ? false : true);
+
+  const handleExpandMoreClick = () => {
+    setArticlesToShow((prev) => prev + 3);
+  };
 
   const handleExpandClick = () => {
-    setArticlesToShow((prev) => prev + 3);
+    setShowTiles((prev) => {
+      if (!prev) {
+        setArticlesToShow(6);
+      } else {
+        setArticlesToShow(0);
+      }
+      return !prev;
+    });
   };
 
   return (
     <div className="news-section">
-      <h2 className='title'>
-        <a href={path} onClick={(e) => handleSectionClick(sectionName, e)} className="clickable-section">
-          {sectionName}
+      <div className="title-container">
+        <div className="title" onClick={handleExpandClick}>
+          <span className="expand-title">{sectionName}</span>
+          <span className={`expand-icon ${showTiles ? 'open' : ''}`}>&rsaquo;</span>
+        </div>
+        <a href={sectionName} className="individual-link" onClick={() => console.log('individual-link')}>
+          {sectionName + "について詳しく見る"}
         </a>
-      </h2>
+      </div>
       <div className="headline-tiles">
         {articles.slice(0, articlesToShow).map((article) => (
           <Tile
@@ -41,13 +56,13 @@ const NewsSection: React.FC<NewsSectionProps> = ({ sectionName, articles, path, 
           />
         ))}
       </div>
-      {articlesToShow < articles.length && (
-        <button onClick={handleExpandClick} className="expand-button">
-          Expand
-        </button>
+      {showTiles && (
+        <span onClick={handleExpandMoreClick} className="expand-symbol">
+          &raquo;
+        </span>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default NewsSection;

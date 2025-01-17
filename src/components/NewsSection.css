@@ -3,19 +3,41 @@
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 20px;
-  background-color: #ffffff;
+  background-color: hsl(0, 0%, 100%);
   border-radius: 10px;
   padding: 5px;
+  margin-left: 30px;
+  margin-right: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .title {
   font-size: 24px;
-  margin-left: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+.triangle-icon {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #333; /* 三角形を作るために上辺に色を設定 */
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.triangle-icon.open {
+  transform: rotate(180deg); /* クリック時に三角形を回転 */
 }
 
 .headline-tiles {
+  margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -37,25 +59,52 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.clickable-section {
+.expand-title {
   color: #0056b3;
   cursor: pointer;
   text-decoration: none;
+  font-size: 25px;
+  font-weight: bold;
+  user-select: none;
 }
 
-.clickable-section:hover {
-  text-decoration: underline;
-}
-
-.expand-button {
-  background-color: #007bff;
-  color: white;
+.expand-symbol {
+  color: #0056b3;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
-  margin-top: 10px;
+  margin-bottom: 20px;
+  margin-right: 0px;
+  margin-left: auto;
+  font-size: 35px;
+  transform: rotate(45deg);
+
 }
 
-.expand-button:hover {
+.expand:hover {
   background-color: #0056b3;
+}
+
+.expand-icon {
+  color: #0056b3;
+  margin-left: 20px;
+  user-select: none;
+  display:inline-block;
+  transition: transform 0.3s ease;
+  font-size: 35px;
+}
+
+.expand-icon.open {
+  transform: rotate(90deg);
+}
+
+.individual-link {
+  color: #afafaf;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.individual-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
 }
